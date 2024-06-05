@@ -19,12 +19,14 @@ export default function App() {
   const [profileComplete, setProfileComplete] = useState(false);
   const [activePanel, setActivePanel] = useState('agenda');
   const [userRole, setUserRole] = useState('');
+  const [isLoading, setIsLoading] = useState(true);
 
   const checkUserProfile = async (uid) => {
     const snapshot = await database.ref(`USERS/${uid}`).once('value');
     const userData = snapshot.val();
     setProfileComplete(!!userData);
     setUserRole(userData?.role || '');
+    setIsLoading(false);
   };
 
   const handleUserAuthenticated = (uid, email) => {
@@ -82,21 +84,27 @@ export default function App() {
         <Auth onUserAuthenticated={handleUserAuthenticated} />
       ) : (
         <>
-          {!profileComplete ? (
-            <UserProfileForm userUid={userUid} onProfileSaved={handleProfileSaved} />
-          ) : (
-            <>
-              <Sidebar setActivePanel={setActivePanel} userRole={userRole} />
-              <div className="main-content">
-                <Header onLogout={handleLogout} />
-                <RedirectGrid />
-                {renderPanel()}
-                <Footer />
-              </div>
-            </>
-          )}
-        </>
-      )}
-    </div>
+        {isLoading ? (
+          <div className="loader">Loading...</div>
+        ) : (
+          <>
+            {!profileComplete ? (
+              <UserProfileForm userUid={userUid} onProfileSaved={handleProfileSaved} />
+            ) : (
+              <>
+                <Sidebar setActivePanel={setActivePanel} userRole={userRole} />
+                <div className="main-content">
+                  <Header onLogout={handleLogout} />
+                  <RedirectGrid />
+                  {renderPanel()}
+                  <Footer />
+                </div>
+              </>
+            )}
+          </>
+        )}
+      </>
+    )}
+  </div>
   );
 }
