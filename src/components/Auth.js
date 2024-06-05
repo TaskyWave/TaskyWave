@@ -22,7 +22,6 @@ const Auth = ({ onUserAuthenticated }) => {
 
   const handleLogin = async (e) => {
     e.preventDefault();
-
     try {
       await auth.signInWithEmailAndPassword(emailLI, passwordLI);
       setErrorLI(null);
@@ -33,7 +32,6 @@ const Auth = ({ onUserAuthenticated }) => {
 
   const handleSignup = async (e) => {
     e.preventDefault();
-
     try {
       await auth.createUserWithEmailAndPassword(emailSP, passwordSP);
       setErrorSP(null);

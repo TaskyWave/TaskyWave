@@ -19,20 +19,29 @@ export default function App() {
   const [profileComplete, setProfileComplete] = useState(false);
   const [activePanel, setActivePanel] = useState('agenda');
   const [userRole, setUserRole] = useState('');
-  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    if (userUid) {
+      checkUserProfile(userUid);
+    }
+  }, [userUid]);
 
   const checkUserProfile = async (uid) => {
     const snapshot = await database.ref(`USERS/${uid}`).once('value');
     const userData = snapshot.val();
-    setProfileComplete(userData);
-    setUserRole(userData?.role || '');
-    setIsLoading(false);
+    if (userData && userData.firstName && userData.lastName && userData.groupe) {
+      setProfileComplete(true);
+      setUserRole(userData.role);
+    } else {
+      setProfileComplete(false);
+    }
   };
 
-  const handleUserAuthenticated = (uid, email) => {
+  const handleUserAuthenticated = async (uid, email) => {
     setUserUid(uid);
     setUserEmail(email);
-    checkUserProfile(uid);
+    await checkUserProfile(uid); // Wait for the profile check to complete
+    setActivePanel('agenda'); // Set default active panel after login
   };
 
   const handleProfileSaved = () => {
@@ -84,27 +93,21 @@ export default function App() {
         <Auth onUserAuthenticated={handleUserAuthenticated} />
       ) : (
         <>
-        {isLoading ? (
-          <div className="loader">Loading...</div>
-        ) : (
-          <>
-            {!profileComplete ? (
-              <UserProfileForm userUid={userUid} onProfileSaved={handleProfileSaved} />
-            ) : (
-              <>
-                <Sidebar setActivePanel={setActivePanel} userRole={userRole} />
-                <div className="main-content">
-                  <Header onLogout={handleLogout} />
-                  <RedirectGrid />
-                  {renderPanel()}
-                  <Footer />
-                </div>
-              </>
-            )}
-          </>
-        )}
-      </>
-    )}
-  </div>
+          {!profileComplete ? (
+            <UserProfileForm userUid={userUid} onProfileSaved={handleProfileSaved} />
+          ) : (
+            <>
+              <Sidebar setActivePanel={setActivePanel} userRole={userRole} />
+              <div className="main-content">
+                <Header onLogout={handleLogout} />
+                <RedirectGrid />
+                {renderPanel()}
+                <Footer />
+              </div>
+            </>
+          )}
+        </>
+      )}
+    </div>
   );
 }

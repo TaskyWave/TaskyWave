@@ -15,22 +15,31 @@ export function Header({ onLogout }) {
     return () => unsubscribe();
   }, []);
 
-  const checkUserProfile = async (uid) => {
-    const snapshot = await database.ref(`USERS/${uid}`).once('value');
-    if (snapshot.exists()) {
-      const userData = snapshot.val();
-      setUserName(`${userData.firstName} ${userData.lastName}`);
-      fletchGroupName(userData.groupe);
-    }
+  const checkUserProfile = (uid) => {
+    database.ref().child(`USERS/${uid}`).get()
+      .then((snapshot) => {
+        if (snapshot.exists()) {
+          const userData = snapshot.val();
+          setUserName(`${userData.firstName} ${userData.lastName}`);
+          fletchGroupName(userData.groupe);
+        }
+      })
+      .catch((error) => {
+        console.error("Error fetching user profile:", error);
+      });
   };
-
-  const fletchGroupName = async (groupId) => {
-    const groupRef = database.ref(`GROUPES/${groupId}`);
-    const snapshot = await groupRef.once('value');
-    if (snapshot.exists()) {
-      const groupData = snapshot.val();
-      setGroupName(groupData.nomGroupe);
-    }
+  
+  const fletchGroupName = (groupId) => {
+    database.ref().child(`GROUPES/${groupId}`).get()
+      .then((snapshot) => {
+        if (snapshot.exists()) {
+          const groupData = snapshot.val();
+          setGroupName(groupData.nomGroupe);
+        }
+      })
+      .catch((error) => {
+        console.error("Error fetching group name:", error);
+      });
   };
 
   return (

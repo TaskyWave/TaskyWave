@@ -7,8 +7,26 @@ const UserProfileForm = ({ userUid, onProfileSaved }) => {
   const [error, setError] = useState(null);
   const [groupes, setGroupes] = useState([]);
   const [groupe, setGroupe] = useState('');
+  const [isProfileComplete, setIsProfileComplete] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
+    const checkUserProfile = () => {
+      database.ref().child(`USERS/${userUid}`).get().then((snapshot) => {
+        const userData = snapshot.val();
+        if (userData && userData.firstName && userData.lastName && userData.groupe) {
+          setIsProfileComplete(true);
+        }
+        else{
+          setIsProfileComplete(false);
+        }
+      }).catch((error) => {
+        console.error("Error fetching user profile:", error);
+      }).finally(() => {
+        setIsLoading(false);
+      });
+    };
+
     const groupeRef = database.ref('GROUPES');
     groupeRef.on('value', (snapshot) => {
       const groupesData = snapshot.val();
@@ -22,11 +40,13 @@ const UserProfileForm = ({ userUid, onProfileSaved }) => {
         setGroupes([]);
       }
     });
-  
+
+    checkUserProfile();
+    
     return () => {
       groupeRef.off();
     };
-  }, []);
+  }, [userUid]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -42,6 +62,14 @@ const UserProfileForm = ({ userUid, onProfileSaved }) => {
       setError(err.message);
     }
   };
+
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
+
+  if (isProfileComplete) {
+    return <div>Your profile is already complete.</div>;
+  }
 
   return (
     <div className="user-profile-form">
