@@ -18,10 +18,13 @@ export default function App() {
   const [userEmail, setUserEmail] = useState(null);
   const [profileComplete, setProfileComplete] = useState(false);
   const [activePanel, setActivePanel] = useState('agenda');
+  const [userRole, setUserRole] = useState('');
 
   const checkUserProfile = async (uid) => {
     const snapshot = await database.ref(`USERS/${uid}`).once('value');
-    setProfileComplete(snapshot.exists());
+    const userData = snapshot.val();
+    setProfileComplete(!!userData);
+    setUserRole(userData?.role || '');
   };
 
   const handleUserAuthenticated = (uid, email) => {
@@ -40,6 +43,7 @@ export default function App() {
       setUserUid(null);
       setUserEmail(null);
       setProfileComplete(false);
+      setUserRole('');
     } catch (err) {
       console.error(err.message);
     }
@@ -48,10 +52,11 @@ export default function App() {
   const renderPanel = () => {
     switch (activePanel) {
       case 'agenda':
-        return (<div>
-                  <InfoGrid />
-                  <TaskGrid />
-                </div> 
+        return (
+          <div>
+            <InfoGrid />
+            <TaskGrid />
+          </div>
         );
       case 'helpInfo':
         return <HelpInfo />;
@@ -62,10 +67,11 @@ export default function App() {
       case 'settings':
         return <Settings />;
       default:
-        return (<div>
-                  <InfoGrid />
-                  <TaskGrid />
-                </div> 
+        return (
+          <div>
+            <InfoGrid />
+            <TaskGrid />
+          </div>
         );
     }
   };
@@ -80,7 +86,7 @@ export default function App() {
             <UserProfileForm userUid={userUid} onProfileSaved={handleProfileSaved} />
           ) : (
             <>
-              <Sidebar setActivePanel={setActivePanel} />
+              <Sidebar setActivePanel={setActivePanel} userRole={userRole} />
               <div className="main-content">
                 <Header onLogout={handleLogout} />
                 <RedirectGrid />
