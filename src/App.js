@@ -24,7 +24,7 @@ export default function App() {
   const checkUserProfile = async (uid) => {
     const snapshot = await database.ref(`USERS/${uid}`).once('value');
     const userData = snapshot.val();
-    setProfileComplete(!!userData);
+    setProfileComplete(userData);
     setUserRole(userData?.role || '');
     setIsLoading(false);
   };
