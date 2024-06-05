@@ -1,0 +1,355 @@
+body {
+    font-family: Arial, sans-serif;
+    background-color: #e6f2f2;
+    margin: 0;
+    padding: 0;
+}
+.sidebar {
+    width: 250px;
+    height: 100vh;
+    background-color: #ffffff;
+    padding: 20px;
+    box-shadow: 2px 0 5px rgba(0,0,0,0.1);
+    position: fixed;
+}
+.sidebar h1 {
+    font-size: 24px;
+    color: #4CAF50;
+}
+.sidebar ul {
+    list-style: none;
+    padding: 0;
+}
+.sidebar ul li {
+    margin: 20px 0;
+}
+.sidebar ul li a {
+    text-decoration: none;
+    color: #333;
+    font-size: 18px;
+    display: flex;
+    align-items: center;
+}
+.sidebar ul li a img {
+    margin-right: 10px;
+}
+.versionText{
+    position:absolute;
+    bottom: 40px;
+    right: 20px;
+    color: #a4a4a4;
+    font-size: 10px;
+}
+.main-content {
+    margin-left: 270px;
+    padding: 20px;
+}
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.header .user-info {
+    display: flex;
+    align-items: center;
+}
+.header .user-info img {
+    border-radius: 50%;
+    margin-right: 10px;
+}
+.stats {
+    display: flex;
+    justify-content: space-between;
+    margin: 20px 0;
+}
+.stats .stat {
+    background-color: #ffffff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    text-align: center;
+    flex: 1;
+    margin: 0 10px;
+}
+.stats .stat h2 {
+    margin: 10px 0;
+    color: #4CAF50;
+}
+.stats .stat img{
+    width: 75px;
+    height: 75px;
+}
+.stat:hover {
+    background-color: #f0f0f0;
+}
+.stats a{
+    text-decoration: none;
+    color: inherit;
+}
+.chart {
+    background-color: #ffffff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    margin: 20px 0;
+    margin-left: 10px;
+}
+.footer {
+    display: flex;
+    justify-content: space-between;
+    margin-left: 10px;
+}
+.footer .section {
+    background-color: #ffffff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    text-align: center;
+    flex: 1;
+    margin: 0 10px;
+}
+.top-products {
+    background-color: #ffffff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    margin-left: 10px;
+}
+
+.add-btn {
+    background-color: #28a745;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+  
+.tabs {
+    display: flex;
+    justify-content: flex-start;
+    margin-bottom: 20px;
+}
+  
+.tabs button {
+    background: none;
+    border: none;
+    padding: 10px 20px;
+    cursor: pointer;
+    font-size: 16px;
+}
+  
+  .tabs button:hover {
+    background-color: #f0f2f5;
+}
+  
+.controls {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+  
+.controls input, .controls select {
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    margin-right: 10px;
+}
+  
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.TaskID{
+    font-size: 10px;
+}
+
+.IDColumn{
+    width: 18px;
+}
+  
+thead {
+    background-color: #f0f2f5;
+}
+  
+th, td {
+    padding: 10px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+}
+  
+.edit-btn {
+    background-color: #007bff;
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    border-radius: 5px;
+    cursor: pointer;
+    margin: 5px;
+}
+  
+.delete-btn {
+    background-color: #dc3545;
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    border-radius: 5px;
+    cursor: pointer;
+    margin: 5px;
+}
+
+.table-view {
+    background: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+  
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+  
+.header h1 {
+    margin: 10px;
+}
+
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+  
+.modal-content {
+    background: white;
+    padding: 20px;
+    border-radius: 8px;
+    position: relative;
+    width: 90%;
+    max-width: 500px;
+}
+
+.main-content form input{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+  
+.close-btn {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: none;
+    border: none;
+    font-size: 20px;
+    cursor: pointer;
+}
+
+.add-btn:hover {
+    background-color: #45a049;
+}
+  
+.check-btn{
+    background-color: #dc3545;
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    border-radius: 5px;
+    cursor: pointer;
+    margin: 5px;
+}
+  
+.check-btn.done {
+    background-color: green; /* Color for checked state */
+    color: white;
+}
+
+.check-btn.not-done {
+    background-color: red; /* Color for unchecked state */
+    color: white;
+}
+
+.check-btn.done {
+    background-color: #4caf50;
+    border-color: #4caf50;
+    color: #fff;
+  }
+  
+.check-btn:hover, .edit-btn:hover, .delete-btn:hover {
+    background-color: #e0e0e0;
+}
+
+.auth-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background-color: #f7f8fa;
+  }
+  
+  .auth-panel {
+    background: #fff;
+    padding: 40px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+    width: 320px;
+    margin: 0 20px;
+  }
+  
+  .auth-panel h2 {
+    margin-bottom: 20px;
+    text-align: center;
+  }
+  
+  .auth-panel form {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .auth-panel input {
+    margin-bottom: 15px;
+    padding: 10px;
+    font-size: 14px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+  }
+  
+  .auth-panel button {
+    padding: 10px;
+    font-size: 16px;
+    color: #fff;
+    background-color: #8bc34a;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+  
+  .auth-panel button:hover {
+    background-color: #7cb342;
+  }
+  
+  .error {
+    color: red;
+    font-size: 14px;
+    text-align: center;
+  }
+
+.logout-btn{
+    background-color: #dc3545;
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    border-radius: 5px;
+    cursor: pointer;
+    margin: 5px;
+}
