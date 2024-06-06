@@ -459,16 +459,6 @@ th, td {
     background-color: #0056b3;
   }
   
-  .settings-error {
-    color: red;
-    margin-top: 20px;
-  }
-  
-  .settings-success {
-    color: green;
-    margin-top: 20px;
-  }
-  
   .chart h2 {
     text-align: center;
     color: #333;
@@ -478,6 +468,16 @@ th, td {
     text-align: center;
     color: #555;
     margin-bottom: 20px;
+  }
+
+  .chart .settings-error {
+    color: red;
+    margin-top: 20px;
+  }
+  
+  .chart .settings-success {
+    color: green;
+    margin-top: 20px;
   }
   
   .chart input,

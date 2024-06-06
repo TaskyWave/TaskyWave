@@ -72,19 +72,19 @@ const UserProfileForm = ({ userUid, onProfileSaved }) => {
   }
 
   return (
-    <div className="user-profile-form">
-      <h2>Complete your profile</h2>
+    <div className="chart">
+      <h2>Votre profile</h2>
       <form onSubmit={handleSubmit}>
         <input
           type="text"
-          placeholder="First Name"
+          placeholder="Prénom"
           value={firstName}
           onChange={(e) => setFirstName(e.target.value)}
           required
         />
         <input
           type="text"
-          placeholder="Last Name"
+          placeholder="Nom"
           value={lastName}
           onChange={(e) => setLastName(e.target.value)}
           required
@@ -101,7 +101,7 @@ const UserProfileForm = ({ userUid, onProfileSaved }) => {
             </option>
           ))}
         </select>
-        <button type="submit">Save</button>
+        <button className='check-btn done' type="submit">Save</button>
         {error && <p className="error">{error}</p>}
       </form>
     </div>
