@@ -75,10 +75,6 @@ body {
     margin: 10px 0;
     color: #4CAF50;
 }
-.stats .stat img{
-    width: 75px;
-    height: 75px;
-}
 .stat:hover {
     background-color: #f0f0f0;
 }
@@ -344,6 +340,12 @@ th, td {
     text-align: center;
   }
 
+  .succes {
+    color: green;
+    font-size: 14px;
+    text-align: center;
+  }
+
 .logout-btn{
     background-color: #dc3545;
     color: white;
@@ -353,3 +355,166 @@ th, td {
     cursor: pointer;
     margin: 5px;
 }
+
+.subjects-notes-panel {
+    margin: 20px;
+    padding: 20px;
+    background-color: #f9f9f9;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+}
+
+.add-new-subject {
+    background-color: #007bff;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.add-new-subject:hover {
+    background-color: #0056b3;
+}
+
+.subjects-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.subjects-table th, .subjects-table td {
+    padding: 12px;
+    border: 1px solid #ddd;
+    text-align: left;
+}
+
+.notes-list {
+    list-style-type: none;
+    padding: 0;
+}
+
+.notes-list li {
+    background-color: #e9ecef;
+    padding: 8px;
+    margin: 5px 0;
+    border-radius: 5px;
+}
+
+.settings-container {
+    background-color: #f9f9f9;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 20px;
+    max-width: 600px;
+    margin: auto;
+  }
+  
+  .settings-container h2 {
+    text-align: center;
+    color: #333;
+  }
+  
+  .settings-info p {
+    margin: 10px 0;
+    font-size: 16px;
+  }
+  
+  .settings-info p strong {
+    color: #555;
+  }
+  
+  .settings-form {
+    margin-top: 20px;
+  }
+  
+  .settings-form label {
+    display: block;
+    margin-bottom: 10px;
+    font-size: 14px;
+  }
+  
+  .settings-form input,
+  .settings-form select {
+    width: 100%;
+    padding: 8px;
+    margin-top: 5px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+  }
+  
+  .settings-button {
+    display: block;
+    width: 100%;
+    padding: 10px;
+    margin-top: 20px;
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 16px;
+  }
+  
+  .settings-button:hover {
+    background-color: #0056b3;
+  }
+  
+  .settings-error {
+    color: red;
+    margin-top: 20px;
+  }
+  
+  .settings-success {
+    color: green;
+    margin-top: 20px;
+  }
+  
+  .chart h2 {
+    text-align: center;
+    color: #333;
+  }
+  
+  .chart p {
+    text-align: center;
+    color: #555;
+    margin-bottom: 20px;
+  }
+  
+  .chart input,
+  .chart select {
+    width: calc(25% - 10px);
+    padding: 8px;
+    margin: 5px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+  }
+
+  .chart .delete-btn{
+    margin: 5px;
+  }
+  
+  .chart button:hover {
+    background-color: #0056b3;
+  }
+  
+  .chart table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+  }
+  
+  .chart th,
+  .chart td {
+    border: 1px solid #ddd;
+    padding: 10px;
+    text-align: left;
+  }
+  
+  .chart th {
+    background-color: #f2f2f2;
+  }
+  
+  .chart td button {
+    margin: 0 5px;
+  }
+  

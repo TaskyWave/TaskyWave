@@ -11,7 +11,7 @@ import { auth, database } from './components/firebase';
 import HelpInfo from './components/HelpInfo';
 import Administration from './components/Administration';
 import Settings from './components/Settings';
-import Notes from './components/Notes';
+import SubjectsNotesPanel from './components/SubjectsNotesPanel';
 
 export default function App() {
   const [userUid, setUserUid] = useState(null);
@@ -72,7 +72,7 @@ export default function App() {
       case 'helpInfo':
         return <HelpInfo />;
       case 'notes':
-        return <Notes />;
+        return <SubjectsNotesPanel />;
       case 'administration':
         return <Administration />;
       case 'settings':
