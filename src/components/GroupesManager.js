@@ -82,24 +82,28 @@ const GroupesManager = () => {
           placeholder="Nom du groupe"
           value={nomGroupe}
           onChange={(e) => setNomGroupe(e.target.value)}
+          required
         />
         <input
           type="text"
           placeholder="Année"
           value={annee}
           onChange={(e) => setAnnee(e.target.value)}
+          required
         />
         <input
           type="text"
           placeholder="École"
           value={ecole}
           onChange={(e) => setEcole(e.target.value)}
+          required
         />
         <input
           type="text"
           placeholder="Département"
           value={departement}
           onChange={(e) => setDepartement(e.target.value)}
+          required
         />
         {editingGroupe ? (
           <button className='check-btn done' onClick={saveGroupe}>Sauvegarder</button>

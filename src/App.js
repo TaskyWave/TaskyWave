@@ -12,6 +12,8 @@ import HelpInfo from './components/HelpInfo';
 import Administration from './components/Administration';
 import Settings from './components/Settings';
 import SubjectsNotesPanel from './components/SubjectsNotesPanel';
+import Bult from './components/Bulletin';
+import Bulletin from './components/Bulletin';
 
 export default function App() {
   const [userUid, setUserUid] = useState(null);
@@ -19,6 +21,7 @@ export default function App() {
   const [profileComplete, setProfileComplete] = useState(false);
   const [activePanel, setActivePanel] = useState('agenda');
   const [userRole, setUserRole] = useState('');
+  const [bulletinKey, setBulletinKey] = useState(0);
 
   useEffect(() => {
     if (userUid) {
@@ -60,6 +63,10 @@ export default function App() {
     }
   };
 
+  const refreshBulletin = () => {
+    setBulletinKey((prevKey) => prevKey + 1);
+  };
+
   const renderPanel = () => {
     switch (activePanel) {
       case 'agenda':
@@ -72,7 +79,13 @@ export default function App() {
       case 'helpInfo':
         return <HelpInfo />;
       case 'notes':
-        return <SubjectsNotesPanel />;
+        return (<div>
+            <SubjectsNotesPanel />
+            <div className='chart'>
+              <button className='edit-btn' onClick={refreshBulletin}>Rafraîchir les calculs</button>
+              <Bulletin key={bulletinKey} /> 
+            </div>
+          </div> );
       case 'administration':
         return <Administration />;
       case 'settings':

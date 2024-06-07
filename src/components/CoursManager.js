@@ -8,7 +8,7 @@ const CoursManager = () => {
   const [ues, setUes] = useState([]);
   const [nomCour, setNomCour] = useState('');
   const [ecole, setEcole] = useState('');
-  const [ue, setUe] = useState('');
+  const [ueCoefficients, setUeCoefficients] = useState([]);
   const [profRef, setProfRef] = useState('');
   const [editingCours, setEditingCours] = useState(null);
 
@@ -54,12 +54,12 @@ const CoursManager = () => {
       id: newId,
       nomCour,
       ecole,
-      ue,
+      ueCoefficients,
       profRef,
     });
     setNomCour('');
     setEcole('');
-    setUe('');
+    setUeCoefficients([]);
     setProfRef('');
   };
 
@@ -68,7 +68,7 @@ const CoursManager = () => {
     setNomCour(cours.nomCour);
     setProfRef(cours.profRef);
     setEcole(cours.ecole);
-    setUe(cours.ue);
+    setUeCoefficients(cours.ueCoefficients);
   };
 
   const saveCours = () => {
@@ -77,7 +77,7 @@ const CoursManager = () => {
       id: editingCours.id,
       nomCour,
       ecole,
-      ue,
+      ueCoefficients,
       profRef,
     });
     setEditingCours(null);
@@ -88,40 +88,84 @@ const CoursManager = () => {
     coursRef.remove();
   };
 
+  const handleUeChange = (index, event) => {
+    const { name, value } = event.target;
+    const updatedUeCoefficients = [...ueCoefficients];
+    updatedUeCoefficients[index] = {
+      ...updatedUeCoefficients[index],
+      [name]: name === 'coef' ? parseFloat(value) : value,
+    };
+    setUeCoefficients(updatedUeCoefficients);
+  };
+
+  const addUeCoefficient = () => {
+    setUeCoefficients([...ueCoefficients, { ueId: '', coef: '' }]);
+  };
+
+  const removeUeCoefficient = (index) => {
+    const updatedUeCoefficients = ueCoefficients.filter((_, i) => i !== index);
+    setUeCoefficients(updatedUeCoefficients);
+  };
+
   return (
-    <div >
+    <div className="cours-manager">
       <h2>Administration des Cours</h2>
       <p>Options d'administration pour gérer les cours.</p>
-      <div>
+      <div className="form-group">
         <input
           type="text"
           placeholder="Nom du cours"
           value={nomCour}
           onChange={(e) => setNomCour(e.target.value)}
+          required
         />
         <input
           type="text"
           placeholder="École"
           value={ecole}
           onChange={(e) => setEcole(e.target.value)}
-        />
-        <select
-          value={ue}
-          onChange={(e) => setUe(e.target.value)}
           required
-        >
-          <option value="">Choisissez une UE</option>
-          {ues.map((ueItem) => (
-            <option key={ueItem.id} value={ueItem.id}>
-              {ueItem.nomUE}
-            </option>
+        />
+        <div>
+          {ueCoefficients.map((ueCoefficient, index) => (
+            <div key={index} className="ue-coefficient">
+              <select
+                name="ueId"
+                value={ueCoefficient.ueId}
+                onChange={(e) => handleUeChange(index, e)}
+                required
+              >
+                <option value="" disabled>Choisissez une UE</option>
+                {ues.map((ueItem) => (
+                  <option key={ueItem.id} value={ueItem.id}>
+                    {ueItem.nomUE}
+                  </option>
+                ))}
+              </select>
+              <input
+                type="number"
+                step="0.01"
+                name="coef"
+                placeholder="Coefficient"
+                value={ueCoefficient.coef}
+                onChange={(e) => handleUeChange(index, e)}
+                required
+              />
+              <button type="button" onClick={() => removeUeCoefficient(index)}>
+                Supprimer
+              </button>
+            </div>
           ))}
-        </select>
+          <button type="button" onClick={addUeCoefficient}>
+            Ajouter UE et Coefficient
+          </button>
+        </div>
         <input
           type="text"
           placeholder="Professeur référence"
           value={profRef}
           onChange={(e) => setProfRef(e.target.value)}
+          required
         />
         {editingCours ? (
           <button className='check-btn done' onClick={saveCours}>Sauvegarder</button>
@@ -147,7 +191,12 @@ const CoursManager = () => {
               <td>{cours.nomCour}</td>
               <td>{cours.profRef}</td>
               <td>{cours.ecole}</td>
-              <td>{ues.find((ueItem) => ueItem.id === cours.ue)?.nomUE}</td>
+              <td>
+                {cours.ueCoefficients.map((ueCoefficient) => {
+                  const ue = ues.find((ueItem) => ueItem.id === ueCoefficient.ueId);
+                  return `${ue ? ue.nomUE : 'UE non trouvée'} (Coef: ${ueCoefficient.coef})`;
+                }).join(', ')}
+              </td>
               <td>
                 <button className='edit-btn' onClick={() => editCours(cours)}>Éditer</button>
                 <button className='delete-btn' onClick={() => deleteCours(cours)}>Supprimer</button>

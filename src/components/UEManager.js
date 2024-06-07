@@ -67,6 +67,7 @@ const UEManager = () => {
           placeholder="Nom de l'UE"
           value={nomUE}
           onChange={(e) => setNomUE(e.target.value)}
+          required
         />
         {editingUE ? (
           <button className='check-btn done' onClick={saveUE}>Sauvegarder</button>
