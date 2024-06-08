@@ -1,14 +1,14 @@
 {
   "files": {
     "main.css": "/TaskyWave/static/css/main.1adda9dc.css",
-    "main.js": "/TaskyWave/static/js/main.f3000f8c.js",
+    "main.js": "/TaskyWave/static/js/main.513308e9.js",
     "static/media/moodleLogo.png": "/TaskyWave/static/media/moodleLogo.685b02a701cde4a599fc.png",
     "index.html": "/TaskyWave/index.html",
     "main.1adda9dc.css.map": "/TaskyWave/static/css/main.1adda9dc.css.map",
-    "main.f3000f8c.js.map": "/TaskyWave/static/js/main.f3000f8c.js.map"
+    "main.513308e9.js.map": "/TaskyWave/static/js/main.513308e9.js.map"
   },
   "entrypoints": [
     "static/css/main.1adda9dc.css",
-    "static/js/main.f3000f8c.js"
+    "static/js/main.513308e9.js"
   ]
 }
