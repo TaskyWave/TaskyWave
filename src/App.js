@@ -1,9 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { Header } from "./components/Header";
-import { InfoGrid } from "./components/InfoGrid";
+import InfoPosts from "./components/InfoPosts";
 import { RedirectGrid } from "./components/RedirectGrid";
 import { Sidebar } from "./components/Sidebar";
-import { TaskGrid } from "./components/TaskGrid";
 import { Footer } from "./components/Footer";
 import Auth from "./components/Auth";
 import UserProfileForm from './components/UserProfileForm';
@@ -12,8 +11,8 @@ import HelpInfo from './components/HelpInfo';
 import Administration from './components/Administration';
 import Settings from './components/Settings';
 import SubjectsNotesPanel from './components/SubjectsNotesPanel';
-import Bult from './components/Bulletin';
 import Bulletin from './components/Bulletin';
+import TasksManager from './components/TasksManager';
 
 export default function App() {
   const [userUid, setUserUid] = useState(null);
@@ -72,8 +71,8 @@ export default function App() {
       case 'agenda':
         return (
           <div>
-            <InfoGrid />
-            <TaskGrid />
+            <InfoPosts />
+            <TasksManager />
           </div>
         );
       case 'helpInfo':
@@ -93,8 +92,8 @@ export default function App() {
       default:
         return (
           <div>
-            <InfoGrid />
-            <TaskGrid />
+            <InfoPosts />
+            <TasksManager />
           </div>
         );
     }

@@ -273,12 +273,14 @@ th, td {
 .check-btn.not-done {
     background-color: red; /* Color for unchecked state */
     color: white;
+    margin-bottom: 20px;
 }
 
 .check-btn.done {
     background-color: #4caf50;
     border-color: #4caf50;
     color: #fff;
+    margin-bottom: 20px;
   }
   
 .check-btn:hover, .edit-btn:hover, .delete-btn:hover {
@@ -559,4 +561,77 @@ th, td {
   top: 10px;
   right: 10px;
   cursor: pointer;
+}
+
+.info-grid {
+  padding: 20px;
+}
+
+.info-grid button {
+  margin-bottom: 20px;
+  padding: 10px 20px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  cursor: pointer;
+  border-radius: 4px;
+}
+
+.info-grid .posts-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.info-grid .post {
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  display: flex;
+  flex-direction: column;
+}
+
+.info-grid .post p {
+  margin: 0 0 5px 0;
+}
+
+.info-grid .post small {
+  margin-bottom: 10px;
+  color: #888;
+}
+
+.info-grid .post button {
+  margin-top: 5px;
+  padding: 5px 10px;
+  background-color: #dc3545;
+  color: white;
+  border: none;
+  cursor: pointer;
+  border-radius: 4px;
+  align-self: flex-start;
+}
+
+.info-grid .post button:first-of-type {
+  background-color: #28a745;
+  margin-right: 5px;
+}
+
+.text-modal-content {
+  background-color: #fff;
+  padding: 60px;
+  border-radius: 4px;
+  position: relative;
+}
+
+.text-modal-content .savePostButton{
+  margin-top: 50px;
+}
+
+.chart2 {
+  background-color: #ffffff;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 0 10px rgba(0,0,0,0.1);
+  margin: 20px 0;
+  margin-left: 10px;
 }
