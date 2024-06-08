@@ -69,12 +69,9 @@ export default function App() {
   const renderPanel = () => {
     switch (activePanel) {
       case 'agenda':
-        return (
-          <div>
-            <InfoPosts />
-            <TasksManager />
-          </div>
-        );
+        return <TasksManager />;
+      case 'posts':
+        return <InfoPosts/>;
       case 'helpInfo':
         return <HelpInfo />;
       case 'notes':
@@ -90,12 +87,7 @@ export default function App() {
       case 'settings':
         return <Settings />;
       default:
-        return (
-          <div>
-            <InfoPosts />
-            <TasksManager />
-          </div>
-        );
+        return <TasksManager />;
     }
   };
 

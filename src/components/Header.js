@@ -45,7 +45,7 @@ export function Header({ onLogout }) {
   return (
     <div className="header">
       <div className="search-bar">
-        <h1>Agenda</h1>
+        <h1>TaskyWave</h1>
       </div>
       <div className="user-info">
         {/*<img id="userpicture" src="user-icon.png" alt="User" width="40" height="40" />*/}
