@@ -635,3 +635,87 @@ th, td {
   margin: 20px 0;
   margin-left: 10px;
 }
+
+@media (max-width: 768px) {
+  .sidebar {
+      width: 100%;
+      height: auto;
+      position: relative;
+  }
+  .main-content {
+      margin-left: 0;
+      padding: 10px;
+  }
+  .header {
+      flex-direction: column;
+      align-items: flex-start;
+  }
+  .header h1 {
+      margin: 10px 0;
+  }
+  .stats {
+      flex-direction: column;
+      margin: 10px 0;
+  }
+  .stats .stat {
+      margin: 10px 0;
+      flex: none;
+      width: 100%;
+  }
+  .chart, .footer .section, .top-products, .chart2 {
+      margin-left: 0;
+      margin-right: 0;
+  }
+  .tabs {
+      flex-direction: column;
+      margin-bottom: 10px;
+  }
+  .tabs button {
+      width: 100%;
+      text-align: left;
+  }
+  .controls {
+      flex-direction: column;
+      align-items: flex-start;
+  }
+  .controls input, .controls select {
+      width: 100%;
+      margin-bottom: 10px;
+  }
+  table {
+      width: 100%;
+      overflow-x: auto;
+  }
+  .sidebar ul li {
+      margin: 10px 0;
+  }
+  .sidebar ul li a {
+      font-size: 16px;
+  }
+  .subjects-notes-panel, .settings-container {
+      margin: 10px;
+      padding: 10px;
+  }
+  .subjects-table th, .subjects-table td {
+      padding: 8px;
+  }
+  .info-grid {
+      padding: 10px;
+  }
+  .info-grid button {
+      width: 100%;
+      margin-bottom: 10px;
+  }
+  .info-grid .post {
+      padding: 10px;
+      margin-bottom: 10px;
+  }
+  .auth-container {
+      padding: 10px;
+  }
+  .auth-panel {
+      width: 100%;
+      margin: 0;
+      padding: 20px;
+  }
+}

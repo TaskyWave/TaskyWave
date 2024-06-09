@@ -15,7 +15,7 @@ export function Sidebar({ setActivePanel, userRole }) {
         <li><a href="#" onClick={() => setActivePanel('settings')}>⚙️ Paramètres</a></li>
       </ul>
       <div className='versionText'>
-        <p>Version-0.0.2-ALPHA-3-build-7</p>
+        <p>Version-0.0.2-ALPHA-4-build-8</p>
       </div>
     </div>
   );
