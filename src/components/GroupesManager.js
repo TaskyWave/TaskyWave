@@ -5,10 +5,11 @@ import 'firebase/compat/database';
 
 const GroupesManager = () => {
   const [groupes, setGroupes] = useState([]);
+  const [annees, setAnnees] = useState([]);
+  const [departements, setDepartements] = useState([]);
+  const [ecoles, setEcoles] = useState([]);
   const [nomGroupe, setNomGroupe] = useState('');
-  const [annee, setAnnee] = useState('');
-  const [ecole, setEcole] = useState('');
-  const [departement, setDepartement] = useState('');
+  const [selectedAnnee, setSelectedAnnee] = useState('');
   const [editingGroupe, setEditingGroupe] = useState(null);
 
   useEffect(() => {
@@ -26,8 +27,53 @@ const GroupesManager = () => {
       }
     });
 
+    const anneesRef = firebase.database().ref('ANNEES');
+    anneesRef.on('value', (snapshot) => {
+      const anneesData = snapshot.val();
+      if (anneesData) {
+        const anneesList = Object.keys(anneesData).map((key) => ({
+          id: key,
+          ...anneesData[key],
+        }));
+        setAnnees(anneesList);
+      } else {
+        setAnnees([]);
+      }
+    });
+
+    const departementsRef = firebase.database().ref('DEPARTEMENTS');
+    departementsRef.on('value', (snapshot) => {
+      const departementsData = snapshot.val();
+      if (departementsData) {
+        const departementsList = Object.keys(departementsData).map((key) => ({
+          id: key,
+          ...departementsData[key],
+        }));
+        setDepartements(departementsList);
+      } else {
+        setDepartements([]);
+      }
+    });
+
+    const ecolesRef = firebase.database().ref('ECOLES');
+    ecolesRef.on('value', (snapshot) => {
+      const ecolesData = snapshot.val();
+      if (ecolesData) {
+        const ecolesList = Object.keys(ecolesData).map((key) => ({
+          id: key,
+          ...ecolesData[key],
+        }));
+        setEcoles(ecolesList);
+      } else {
+        setEcoles([]);
+      }
+    });
+
     return () => {
       groupeRef.off();
+      anneesRef.off();
+      departementsRef.off();
+      ecolesRef.off();
     };
   }, []);
 
@@ -37,22 +83,16 @@ const GroupesManager = () => {
     groupeRef.child(newId).set({
       id: newId,
       nomGroupe,
-      annee,
-      ecole,
-      departement,
+      anneeId: selectedAnnee,
     });
     setNomGroupe('');
-    setAnnee('');
-    setEcole('');
-    setDepartement('');
+    setSelectedAnnee('');
   };
 
   const editGroupe = (groupe) => {
     setEditingGroupe(groupe);
     setNomGroupe(groupe.nomGroupe);
-    setAnnee(groupe.annee);
-    setEcole(groupe.ecole);
-    setDepartement(groupe.departement);
+    setSelectedAnnee(groupe.anneeId);
   };
 
   const saveGroupe = () => {
@@ -60,9 +100,7 @@ const GroupesManager = () => {
     groupeRef.set({
       id: editingGroupe.id,
       nomGroupe,
-      annee,
-      ecole,
-      departement,
+      anneeId: selectedAnnee,
     });
     setEditingGroupe(null);
   };
@@ -72,8 +110,18 @@ const GroupesManager = () => {
     groupeRef.remove();
   };
 
+  const getAnneeInfo = (anneeId) => {
+    const annee = annees.find((a) => a.id === anneeId);
+    if (annee) {
+      const departement = departements.find((d) => d.id === annee.departementId);
+      const ecole = ecoles.find((e) => e.id === departement?.ecoleId);
+      return `${departement?.nomDepartement || 'Département non trouvé'}-${annee.nomAnnee}-${ecole?.ecole || 'École non trouvée'}`;
+    }
+    return 'Information non trouvée';
+  };
+
   return (
-    <div >
+    <div>
       <h2>Administration</h2>
       <p>Options d'administration pour gérer les groupes.</p>
       <div>
@@ -84,27 +132,18 @@ const GroupesManager = () => {
           onChange={(e) => setNomGroupe(e.target.value)}
           required
         />
-        <input
-          type="text"
-          placeholder="Année"
-          value={annee}
-          onChange={(e) => setAnnee(e.target.value)}
+        <select
+          value={selectedAnnee}
+          onChange={(e) => setSelectedAnnee(e.target.value)}
           required
-        />
-        <input
-          type="text"
-          placeholder="École"
-          value={ecole}
-          onChange={(e) => setEcole(e.target.value)}
-          required
-        />
-        <input
-          type="text"
-          placeholder="Département"
-          value={departement}
-          onChange={(e) => setDepartement(e.target.value)}
-          required
-        />
+        >
+          <option value="" disabled>Choisissez une année</option>
+          {annees.map((annee) => (
+            <option key={annee.id} value={annee.id}>
+              {getAnneeInfo(annee.id)}
+            </option>
+          ))}
+        </select>
         {editingGroupe ? (
           <button className='check-btn done' onClick={saveGroupe}>Sauvegarder</button>
         ) : (
@@ -116,9 +155,7 @@ const GroupesManager = () => {
           <tr>
             <th>ID</th>
             <th>Nom du groupe</th>
-            <th>Année</th>
-            <th>École</th>
-            <th>Département</th>
+            <th>Année-Département-École</th>
             <th>Actions</th>
           </tr>
         </thead>
@@ -127,9 +164,7 @@ const GroupesManager = () => {
             <tr key={groupe.id}>
               <td>{groupe.id}</td>
               <td>{groupe.nomGroupe}</td>
-              <td>{groupe.annee}</td>
-              <td>{groupe.ecole}</td>
-              <td>{groupe.departement}</td>
+              <td>{getAnneeInfo(groupe.anneeId)}</td>
               <td>
                 <button className='edit-btn' onClick={() => editGroupe(groupe)}>Éditer</button>
                 <button className='delete-btn' onClick={() => deleteGroupe(groupe)}>Supprimer</button>

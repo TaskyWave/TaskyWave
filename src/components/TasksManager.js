@@ -2,8 +2,10 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { v4 as uuidv4 } from 'uuid';
 import firebase from 'firebase/compat/app';
 import 'firebase/compat/database';
-import { auth } from './firebase';
+import { auth, database } from './firebase';
 import Modal from './Modal';
+import ReactQuill from 'react-quill';
+import 'react-quill/dist/quill.snow.css'; // Import des styles de ReactQuill
 
 const TasksManager = () => {
   const [tasks, setTasks] = useState([]);
@@ -131,7 +133,8 @@ const TasksManager = () => {
   }, []);
 
   const deleteTask = useCallback((task) => {
-    const taskRef = firebase.database().ref(`TASKS/${task.id}`);
+    console.log("OK !")
+    const taskRef = database.ref(`TASKS/${task.id}`);
     taskRef.remove();
   }, []);
 
@@ -170,123 +173,38 @@ const TasksManager = () => {
   }
 
   return (
-    <div className="chart">
-      <h2>Tâches</h2>
-      <p>Liste des exos</p>
-      {userRole === 'admin' && (
-        <div className="form-group">
-          <input
-            type="text"
-            placeholder="Titre de la tâche"
-            value={taskTitle}
-            onChange={(e) => setTaskTitle(e.target.value)}
-            required
-          />
-          <textarea
-            placeholder="Description de la tâche"
-            value={taskDescription}
-            onChange={(e) => setTaskDescription(e.target.value)}
-            required
-          />
-          <div>
-            {groupTasks.map((groupTask, index) => (
-              <div key={index} className="group-task">
-                <select
-                  name="groupeID"
-                  value={groupTask.groupeID}
-                  onChange={(e) => handleGroupTaskChange(index, e)}
-                  required
-                >
-                  <option value="" disabled>Choisissez un groupe</option>
-                  {groups.map((groupItem) => (
-                    <option key={groupItem.id} value={groupItem.id}>
-                      {groupItem.nomGroupe}
-                    </option>
-                  ))}
-                </select>
-                <input
-                  type="date"
-                  name="date"
-                  placeholder="Date"
-                  value={groupTask.date}
-                  onChange={(e) => handleGroupTaskChange(index, e)}
-                  required
-                />
-                <input
-                  type="time"
-                  name="heure"
-                  placeholder="Heure"
-                  value={groupTask.heure}
-                  onChange={(e) => handleGroupTaskChange(index, e)}
-                  required
-                />
-                <button type="button" onClick={() => removeGroupTask(index)}>
-                  Supprimer
-                </button>
-              </div>
-            ))}
-            <button type="button" onClick={addGroupTask}>
-              Ajouter un groupe et une date/heure
-            </button>
-          </div>
-          <button className="check-btn done" onClick={addTask}>Ajouter</button>
-        </div>
-      )}
-      <table>
-        <thead>
-          <tr>
-            <th>Titre</th>
-            <th>Description</th>
-            <th>Groupes</th>
-            <th>Dates/Heures</th>
-            <th>Actions</th>
-            <th className='IDColumn' >ID</th>
-          </tr>
-        </thead>
-        <tbody>
+    <div className="chart2">
+      <div className="info-grid">
+        {userRole === 'admin' && (
+          <>
+            <button className='edit-btn' onClick={() => setIsModalOpen(true)}>New Task</button>
+          </>
+        )}
+        <div className="posts-list">
           {tasks.map((task) => {
             const userTask = userTasks.find((userTaskItem) => userTaskItem.id === task.id);
             return (
-              <tr key={task.id}>
-                <td>{task.titre}</td>
-                <td>{task.description}</td>
-                {userRole === 'user' ? (
-                  <>
-                <td>
-                  {task.groupes
-                    .filter((groupTask) => groupTask.groupeID === userGroup)
-                    .map((groupTask) => {
-                      const group = groups.find((groupItem) => groupItem.id === groupTask.groupeID);
-                      return `${group ? group.nomGroupe : 'Groupe non trouvé'}`;
-                    })
-                    .join(', ')}
-                </td>
-                <td>
-                  {task.groupes
-                    .filter((groupTask) => groupTask.groupeID === userGroup)
-                    .map((groupTask) => {
-                      return `${new Date(groupTask.date).toLocaleDateString("fr-FR")} à ${groupTask.heure}`;
-                    })
-                    .join(', ')}
-                </td>
-                </>
-                ) : ( 
-                <>
-                <td>
-                  {task.groupes.map((groupTask) => {
-                    const group = groups.find((groupItem) => groupItem.id === groupTask.groupeID);
-                    return `${group ? group.nomGroupe : 'Groupe non trouvé'}`;
-                  }).join(', ')}
-                </td>
-                <td>
-                  {task.groupes.map((groupTask) => {
-                    const group = groups.find((groupItem) => groupItem.id === groupTask.groupeID);
-                    return `${new Date(groupTask.date).toLocaleDateString("fr-FR")} à ${groupTask.heure}`;
-                  }).join(', ')}
-                </td>
-                </>
-              )}
-                <td>
+              <div key={task.id} className="post">
+                <h3>{task.titre}</h3>
+                <div dangerouslySetInnerHTML={{ __html: task.description }}></div>
+                <div>
+                  {userRole === 'user'
+                    ? task.groupes
+                        .filter((groupTask) => groupTask.groupeID === userGroup)
+                        .map((groupTask) => (
+                          <div key={groupTask.groupeID}>
+                            <p>{groups.find((group) => group.id === groupTask.groupeID)?.nomGroupe || 'Groupe non trouvé'}</p>
+                            <p>{new Date(groupTask.date).toLocaleDateString("fr-FR")} à {groupTask.heure}</p>
+                          </div>
+                        ))
+                    : task.groupes.map((groupTask) => (
+                        <div key={groupTask.groupeID}>
+                          <p>{groups.find((group) => group.id === groupTask.groupeID)?.nomGroupe || 'Groupe non trouvé'}</p>
+                          <p>{new Date(groupTask.date).toLocaleDateString("fr-FR")} à {groupTask.heure}</p>
+                        </div>
+                      ))}
+                </div>
+                <div>
                   <button
                     className={`check-btn ${userTask && userTask.isDone ? 'done' : 'not-done'}`}
                     onClick={() => markTaskAsDone(task.id, !userTask || !userTask.isDone)}
@@ -299,72 +217,70 @@ const TasksManager = () => {
                       <button className='delete-btn' onClick={() => deleteTask(task)}>Supprimer</button>
                     </>
                   )}
-                </td>
-                <td className='TaskID'>{task.id}</td>
-              </tr>
+                </div>
+              </div>
             );
           })}
-        </tbody>
-      </table>
-      <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)}>
-        <div className="form-group">
-          <input
-            type="text"
-            placeholder="Titre de la tâche"
-            value={taskTitle}
-            onChange={(e) => setTaskTitle(e.target.value)}
-            required
-          />
-          <textarea
-            placeholder="Description de la tâche"
-            value={taskDescription}
-            onChange={(e) => setTaskDescription(e.target.value)}
-            required
-          />
-          <div>
-            {groupTasks.map((groupTask, index) => (
-              <div key={index} className="group-task">
-                <select
-                  name="groupeID"
-                  value={groupTask.groupeID}
-                  onChange={(e) => handleGroupTaskChange(index, e)}
+        </div>
+
+        {isModalOpen && (
+          <div className="modal">
+            <div className="text-modal-content">
+              <span className="close" onClick={() => { setIsModalOpen(false); setEditingTask(null); }}>&times;</span>
+              <div className="form-group">
+                <input
+                  type="text"
+                  placeholder="Titre de la tâche"
+                  value={taskTitle}
+                  onChange={(e) => setTaskTitle(e.target.value)}
                   required
-                >
-                  <option value="" disabled>Choisissez un groupe</option>
-                  {groups.map((groupItem) => (
-                    <option key={groupItem.id} value={groupItem.id}>
-                      {groupItem.nomGroupe}
-                    </option>
+                />
+                <ReactQuill
+                  value={taskDescription}
+                  onChange={setTaskDescription}
+                  theme="snow"
+                  placeholder="Description de la tâche"
+                />
+                <div className="group-tasks">
+                  {groupTasks.map((groupTask, index) => (
+                    <div key={index} className="group-task">
+                      <select
+                        name="groupeID"
+                        value={groupTask.groupeID}
+                        onChange={(e) => handleGroupTaskChange(index, e)}
+                      >
+                        <option value="">Sélectionnez un groupe</option>
+                        {groups.map((group) => (
+                          <option key={group.id} value={group.id}>
+                            {group.nomGroupe}
+                          </option>
+                        ))}
+                      </select>
+                      <input
+                        type="date"
+                        name="date"
+                        value={groupTask.date}
+                        onChange={(e) => handleGroupTaskChange(index, e)}
+                      />
+                      <input
+                        type="time"
+                        name="heure"
+                        value={groupTask.heure}
+                        onChange={(e) => handleGroupTaskChange(index, e)}
+                      />
+                      <button className='un-delete-button' onClick={() => removeGroupTask(index)}>Supprimer</button>
+                    </div>
                   ))}
-                </select>
-                <input
-                  type="date"
-                  name="date"
-                  placeholder="Date"
-                  value={groupTask.date}
-                  onChange={(e) => handleGroupTaskChange(index, e)}
-                  required
-                />
-                <input
-                  type="time"
-                  name="heure"
-                  placeholder="Heure"
-                  value={groupTask.heure}
-                  onChange={(e) => handleGroupTaskChange(index, e)}
-                  required
-                />
-                <button type="button" onClick={() => removeGroupTask(index)}>
-                  Supprimer
+                  <button className='un-button' onClick={addGroupTask}>Ajouter un groupe</button>
+                </div>
+                <button className='un-button' onClick={editingTask ? saveTask : addTask}>
+                  {editingTask ? 'Mettre à jour la tâche' : 'Ajouter la tâche'}
                 </button>
               </div>
-            ))}
-            <button type="button" onClick={addGroupTask}>
-              Ajouter un groupe et une date/heure
-            </button>
+            </div>
           </div>
-          <button className="check-btn done" onClick={saveTask}>Sauvegarder</button>
-        </div>
-      </Modal>
+        )}
+      </div>
     </div>
   );
 };

@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { auth, database } from './firebase';
+import firebase from 'firebase/compat/app';
+import 'firebase/compat/database';
 
 const Settings = ({ userUid }) => {
   const [userFirstName, setUserFirstName] = useState(null);
@@ -7,6 +9,7 @@ const Settings = ({ userUid }) => {
   const [role, setUserRole] = useState(null);
   const [UID, setUserUID] = useState(null);
   const [groupName, setGroupName] = useState(null);
+  const [groupAnneeId, setGroupAnneeId] = useState(null);
   const [userEmail, setUserEmail] = useState(null);
 
   const [groups, setGroups] = useState([]);
@@ -15,6 +18,10 @@ const Settings = ({ userUid }) => {
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
 
+  const [departements, setDepartements] = useState([]);
+  const [ecoles, setEcoles] = useState([]);
+  const [annees, setAnnees] = useState([]);
+
   useEffect(() => {
     const unsubscribe = auth.onAuthStateChanged((user) => {
       if (user) {
@@ -22,7 +29,59 @@ const Settings = ({ userUid }) => {
         fetchGroups();
       }
     });
+
     return () => unsubscribe();
+  }, []);
+
+  useEffect(() => {
+
+    const anneesRef = firebase.database().ref('ANNEES');
+    anneesRef.on('value', (snapshot) => {
+      const anneesData = snapshot.val();
+      if (anneesData) {
+        const anneesList = Object.keys(anneesData).map((key) => ({
+          id: key,
+          ...anneesData[key],
+        }));
+        setAnnees(anneesList);
+      } else {
+        setAnnees([]);
+      }
+    });
+
+    const departementsRef = firebase.database().ref('DEPARTEMENTS');
+    departementsRef.on('value', (snapshot) => {
+      const departementsData = snapshot.val();
+      if (departementsData) {
+        const departementsList = Object.keys(departementsData).map((key) => ({
+          id: key,
+          ...departementsData[key],
+        }));
+        setDepartements(departementsList);
+      } else {
+        setDepartements([]);
+      }
+    });
+
+    const ecolesRef = firebase.database().ref('ECOLES');
+    ecolesRef.on('value', (snapshot) => {
+      const ecolesData = snapshot.val();
+      if (ecolesData) {
+        const ecolesList = Object.keys(ecolesData).map((key) => ({
+          id: key,
+          ...ecolesData[key],
+        }));
+        setEcoles(ecolesList);
+      } else {
+        setEcoles([]);
+      }
+    });
+
+    return () => {
+      anneesRef.off();
+      ecolesRef.off();
+      departementsRef.off();
+    };
   }, []);
 
   const checkUserProfile = (uid) => {
@@ -35,7 +94,7 @@ const Settings = ({ userUid }) => {
           setUserRole(`${userData.role}`);
           setUserUID(uid);
           setUserEmail(auth.currentUser.email);
-          fletchGroupName(userData.groupe);
+          fetchGroupName(userData.groupe);
         }
       })
       .catch((error) => {
@@ -43,12 +102,13 @@ const Settings = ({ userUid }) => {
       });
   };
   
-  const fletchGroupName = (groupId) => {
+  const fetchGroupName = (groupId) => {
     database.ref().child(`GROUPES/${groupId}`).get()
       .then((snapshot) => {
         if (snapshot.exists()) {
           const groupData = snapshot.val();
           setGroupName(groupData.nomGroupe);
+          setGroupAnneeId(groupData.anneeId);
         }
       })
       .catch((error) => {
@@ -93,7 +153,7 @@ const Settings = ({ userUid }) => {
 
     try {
       await database.ref(`USERS/${UID}`).update({ groupe: selectedGroup });
-      fletchGroupName(selectedGroup); // Update group info after change
+      fetchGroupName(selectedGroup); // Update group info after change
       setSuccess('Groupe mis à jour avec succès.');
     } catch (error) {
       setError(error.message);
@@ -116,6 +176,16 @@ const Settings = ({ userUid }) => {
     }
   };
 
+  const getAnneeInfo = (anneeId) => {
+    const annee = annees.find((a) => a.id === anneeId);
+    if (annee) {
+      const departement = departements.find((d) => d.id === annee.departementId);
+      const ecole = ecoles.find((e) => e.id === departement?.ecoleId);
+      return `${departement?.nomDepartement || 'Département non trouvé'}-${annee.nomAnnee}-${ecole?.ecole || 'École non trouvée'}`;
+    }
+    return 'Information non trouvée';
+  };
+
   return (
     <div className="chart">
       <h2>Paramètres</h2>
@@ -124,7 +194,7 @@ const Settings = ({ userUid }) => {
         <p><strong>Prénom :</strong> {userFirstName}</p>
         <p><strong>Email :</strong> {userEmail}</p>
         <p><strong>Statut :</strong> {role}</p>
-        <p><strong>Groupe :</strong> {groupName}</p>
+        <p><strong>Groupe :</strong> {`${groupName} - ${getAnneeInfo(groupAnneeId)}`}</p>
         <p><strong>ID :</strong> {UID}</p>
       </div>
       <form className="settings-form" onSubmit={handleChangeUserInfo}>
@@ -155,7 +225,7 @@ const Settings = ({ userUid }) => {
             <option value="">Choisissez un groupe</option>
             {groups.map((group) => (
               <option key={group.id} value={group.id}>
-                {group.nomGroupe}
+                {`${group.nomGroupe} - ${getAnneeInfo(group.anneeId)}`}
               </option>
             ))}
           </select>

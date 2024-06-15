@@ -20,14 +20,47 @@ const SubjectNotesPanel = () => {
     const unsubscribe = firebase.auth().onAuthStateChanged((user) => {
       if (user) {
         setUserUid(user.uid);
+        fetchUserGroupeAndCours(user.uid);
         fetchNotes(user.uid);
       }
     });
 
-    fetchCours();
-
     return () => unsubscribe();
   }, []);
+
+  const fetchUserGroupeAndCours = (uid) => {
+    const userRef = firebase.database().ref(`USERS/${uid}`);
+    userRef.once('value', (userSnapshot) => {
+      const userData = userSnapshot.val();
+      const userGroupe = userData.groupe;
+
+      const groupesRef = firebase.database().ref(`GROUPES/${userGroupe}`);
+      groupesRef.once('value', (groupeSnapshot) => {
+        const groupeData = groupeSnapshot.val();
+        const anneeId = groupeData.anneeId;
+
+        fetchCoursByAnnee(anneeId);
+      });
+    });
+  };
+
+  const fetchCoursByAnnee = (anneeId) => {
+    const coursRef = firebase.database().ref('COURS');
+    coursRef.on('value', (snapshot) => {
+      const coursData = snapshot.val();
+      if (coursData) {
+        const coursList = Object.keys(coursData)
+          .map((key) => ({
+            id: key,
+            ...coursData[key],
+          }))
+          .filter((coursItem) => coursItem.anneeId === anneeId);
+        setCours(coursList);
+      } else {
+        setCours([]);
+      }
+    });
+  };
 
   const fetchNotes = (uid) => {
     const notesRef = firebase.database().ref(`USERS/${uid}/NOTES`);
@@ -41,22 +74,6 @@ const SubjectNotesPanel = () => {
         setNotes(notesList);
       } else {
         setNotes([]);
-      }
-    });
-  };
-
-  const fetchCours = () => {
-    const coursRef = firebase.database().ref('COURS');
-    coursRef.on('value', (snapshot) => {
-      const coursData = snapshot.val();
-      if (coursData) {
-        const coursList = Object.keys(coursData).map((key) => ({
-          id: key,
-          ...coursData[key],
-        }));
-        setCours(coursList);
-      } else {
-        setCours([]);
       }
     });
   };

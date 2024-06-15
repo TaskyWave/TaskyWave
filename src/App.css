@@ -176,7 +176,7 @@ th, td {
     border-bottom: 1px solid #ddd;
 }
   
-.edit-btn {
+.edit-btn, .info-grid .edit-btn {
     background-color: #007bff;
     color: white;
     border: none;
@@ -270,13 +270,13 @@ th, td {
     color: white;
 }
 
-.check-btn.not-done {
+.info-grid .check-btn.not-done {
     background-color: red; /* Color for unchecked state */
     color: white;
     margin-bottom: 20px;
 }
 
-.check-btn.done {
+.info-grid .check-btn.done {
     background-color: #4caf50;
     border-color: #4caf50;
     color: #fff;
@@ -567,14 +567,24 @@ th, td {
   padding: 20px;
 }
 
-.info-grid button {
-  margin-bottom: 20px;
-  padding: 10px 20px;
+.info-grid .un-button {
   background-color: #007bff;
   color: white;
   border: none;
+  padding: 5px 10px;
+  border-radius: 5px;
   cursor: pointer;
-  border-radius: 4px;
+  margin: 5px;
+}
+
+.info-grid .savePostButton {
+  background-color: #4caf50;
+  color: white;
+  border: none;
+  padding: 5px 10px;
+  border-radius: 5px;
+  cursor: pointer;
+  margin: 5px;
 }
 
 .info-grid .posts-list {
@@ -600,19 +610,17 @@ th, td {
   color: #888;
 }
 
-.info-grid .post button {
-  margin-top: 5px;
-  padding: 5px 10px;
+.info-grid .un-delete-button {
   background-color: #dc3545;
   color: white;
   border: none;
+  padding: 5px 10px;
+  border-radius: 5px;
   cursor: pointer;
-  border-radius: 4px;
-  align-self: flex-start;
+  margin: 5px;
 }
 
 .info-grid .post button:first-of-type {
-  background-color: #28a745;
   margin-right: 5px;
 }
 

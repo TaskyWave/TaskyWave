@@ -6,8 +6,11 @@ import 'firebase/compat/database';
 const CoursManager = () => {
   const [cours, setCours] = useState([]);
   const [ues, setUes] = useState([]);
+  const [annees, setAnnees] = useState([]);
+  const [departements, setDepartements] = useState([]);
+  const [ecoles, setEcoles] = useState([]);
   const [nomCour, setNomCour] = useState('');
-  const [ecole, setEcole] = useState('');
+  const [selectedAnnee, setSelectedAnnee] = useState('');
   const [ueCoefficients, setUeCoefficients] = useState([]);
   const [profRef, setProfRef] = useState('');
   const [editingCours, setEditingCours] = useState(null);
@@ -41,9 +44,54 @@ const CoursManager = () => {
       }
     });
 
+    const anneesRef = firebase.database().ref('ANNEES');
+    anneesRef.on('value', (snapshot) => {
+      const anneesData = snapshot.val();
+      if (anneesData) {
+        const anneesList = Object.keys(anneesData).map((key) => ({
+          id: key,
+          ...anneesData[key],
+        }));
+        setAnnees(anneesList);
+      } else {
+        setAnnees([]);
+      }
+    });
+
+    const departementsRef = firebase.database().ref('DEPARTEMENTS');
+    departementsRef.on('value', (snapshot) => {
+      const departementsData = snapshot.val();
+      if (departementsData) {
+        const departementsList = Object.keys(departementsData).map((key) => ({
+          id: key,
+          ...departementsData[key],
+        }));
+        setDepartements(departementsList);
+      } else {
+        setDepartements([]);
+      }
+    });
+
+    const ecolesRef = firebase.database().ref('ECOLES');
+    ecolesRef.on('value', (snapshot) => {
+      const ecolesData = snapshot.val();
+      if (ecolesData) {
+        const ecolesList = Object.keys(ecolesData).map((key) => ({
+          id: key,
+          ...ecolesData[key],
+        }));
+        setEcoles(ecolesList);
+      } else {
+        setEcoles([]);
+      }
+    });
+
     return () => {
       coursRef.off();
       uesRef.off();
+      anneesRef.off();
+      departementsRef.off();
+      ecolesRef.off();
     };
   }, []);
 
@@ -53,12 +101,12 @@ const CoursManager = () => {
     coursRef.child(newId).set({
       id: newId,
       nomCour,
-      ecole,
+      anneeId: selectedAnnee,
       ueCoefficients,
       profRef,
     });
     setNomCour('');
-    setEcole('');
+    setSelectedAnnee('');
     setUeCoefficients([]);
     setProfRef('');
   };
@@ -67,7 +115,7 @@ const CoursManager = () => {
     setEditingCours(cours);
     setNomCour(cours.nomCour);
     setProfRef(cours.profRef);
-    setEcole(cours.ecole);
+    setSelectedAnnee(cours.anneeId);
     setUeCoefficients(cours.ueCoefficients);
   };
 
@@ -76,7 +124,7 @@ const CoursManager = () => {
     coursRef.set({
       id: editingCours.id,
       nomCour,
-      ecole,
+      anneeId: selectedAnnee,
       ueCoefficients,
       profRef,
     });
@@ -107,6 +155,16 @@ const CoursManager = () => {
     setUeCoefficients(updatedUeCoefficients);
   };
 
+  const getAnneeInfo = (anneeId) => {
+    const annee = annees.find((a) => a.id === anneeId);
+    if (annee) {
+      const departement = departements.find((d) => d.id === annee.departementId);
+      const ecole = ecoles.find((e) => e.id === departement?.ecoleId);
+      return `${departement?.nomDepartement || 'Département non trouvé'}-${annee.nomAnnee}-${ecole?.ecole || 'École non trouvée'}`;
+    }
+    return 'Information non trouvée';
+  };
+
   return (
     <div className="cours-manager">
       <h2>Administration des Cours</h2>
@@ -119,13 +177,18 @@ const CoursManager = () => {
           onChange={(e) => setNomCour(e.target.value)}
           required
         />
-        <input
-          type="text"
-          placeholder="École"
-          value={ecole}
-          onChange={(e) => setEcole(e.target.value)}
+        <select
+          value={selectedAnnee}
+          onChange={(e) => setSelectedAnnee(e.target.value)}
           required
-        />
+        >
+          <option value="" disabled>Choisissez une année</option>
+          {annees.map((annee) => (
+            <option key={annee.id} value={annee.id}>
+              {getAnneeInfo(annee.id)}
+            </option>
+          ))}
+        </select>
         <div>
           {ueCoefficients.map((ueCoefficient, index) => (
             <div key={index} className="ue-coefficient">
@@ -179,7 +242,7 @@ const CoursManager = () => {
             <th>ID</th>
             <th>Nom du Cours</th>
             <th>Professeur Référence</th>
-            <th>École</th>
+            <th>Année-Département-École</th>
             <th>Unité d'Enseignement</th>
             <th>Actions</th>
           </tr>
@@ -190,7 +253,7 @@ const CoursManager = () => {
               <td>{cours.id}</td>
               <td>{cours.nomCour}</td>
               <td>{cours.profRef}</td>
-              <td>{cours.ecole}</td>
+              <td>{getAnneeInfo(cours.anneeId)}</td>
               <td>
                 {cours.ueCoefficients.map((ueCoefficient) => {
                   const ue = ues.find((ueItem) => ueItem.id === ueCoefficient.ueId);

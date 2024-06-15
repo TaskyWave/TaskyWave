@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { database } from './firebase'; // Assume you have a firebase.js where you initialize Firebase
+import { database } from './firebase';
+import firebase from 'firebase/compat/app';
+import 'firebase/compat/database';
 
 const UserProfileForm = ({ userUid, onProfileSaved }) => {
   const [firstName, setFirstName] = useState('');
@@ -9,6 +11,10 @@ const UserProfileForm = ({ userUid, onProfileSaved }) => {
   const [groupe, setGroupe] = useState('');
   const [isProfileComplete, setIsProfileComplete] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
+
+  const [departements, setDepartements] = useState([]);
+  const [ecoles, setEcoles] = useState([]);
+  const [annees, setAnnees] = useState([]);
 
   useEffect(() => {
     const checkUserProfile = () => {
@@ -48,6 +54,57 @@ const UserProfileForm = ({ userUid, onProfileSaved }) => {
     };
   }, [userUid]);
 
+  useEffect(() => {
+
+    const anneesRef = firebase.database().ref('ANNEES');
+    anneesRef.on('value', (snapshot) => {
+      const anneesData = snapshot.val();
+      if (anneesData) {
+        const anneesList = Object.keys(anneesData).map((key) => ({
+          id: key,
+          ...anneesData[key],
+        }));
+        setAnnees(anneesList);
+      } else {
+        setAnnees([]);
+      }
+    });
+
+    const departementsRef = firebase.database().ref('DEPARTEMENTS');
+    departementsRef.on('value', (snapshot) => {
+      const departementsData = snapshot.val();
+      if (departementsData) {
+        const departementsList = Object.keys(departementsData).map((key) => ({
+          id: key,
+          ...departementsData[key],
+        }));
+        setDepartements(departementsList);
+      } else {
+        setDepartements([]);
+      }
+    });
+
+    const ecolesRef = firebase.database().ref('ECOLES');
+    ecolesRef.on('value', (snapshot) => {
+      const ecolesData = snapshot.val();
+      if (ecolesData) {
+        const ecolesList = Object.keys(ecolesData).map((key) => ({
+          id: key,
+          ...ecolesData[key],
+        }));
+        setEcoles(ecolesList);
+      } else {
+        setEcoles([]);
+      }
+    });
+
+    return () => {
+      anneesRef.off();
+      ecolesRef.off();
+      departementsRef.off();
+    };
+  }, []);
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
@@ -61,6 +118,16 @@ const UserProfileForm = ({ userUid, onProfileSaved }) => {
     } catch (err) {
       setError(err.message);
     }
+  };
+
+  const getAnneeInfo = (anneeId) => {
+    const annee = annees.find((a) => a.id === anneeId);
+    if (annee) {
+      const departement = departements.find((d) => d.id === annee.departementId);
+      const ecole = ecoles.find((e) => e.id === departement?.ecoleId);
+      return `${departement?.nomDepartement || 'Département non trouvé'}-${annee.nomAnnee}-${ecole?.ecole || 'École non trouvée'}`;
+    }
+    return 'Information non trouvée';
   };
 
   if (isLoading) {
@@ -95,9 +162,9 @@ const UserProfileForm = ({ userUid, onProfileSaved }) => {
           required
         >
           <option value="">Choisissez un groupe</option>
-          {groupes.map((groupeItem) => (
-            <option key={groupeItem.id} value={groupeItem.id}>
-              {groupeItem.nomGroupe}
+          {groupes.map((group) => (
+              <option key={group.id} value={group.id}>
+              {`${group.nomGroupe} - ${getAnneeInfo(group.anneeId)}`}
             </option>
           ))}
         </select>
