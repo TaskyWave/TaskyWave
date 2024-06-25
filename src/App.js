@@ -18,15 +18,22 @@ export default function App() {
   const [userUid, setUserUid] = useState(null);
   const [userEmail, setUserEmail] = useState(null);
   const [profileComplete, setProfileComplete] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   const [activePanel, setActivePanel] = useState('agenda');
   const [userRole, setUserRole] = useState('');
   const [bulletinKey, setBulletinKey] = useState(0);
 
   useEffect(() => {
-    if (userUid) {
-      checkUserProfile(userUid);
-    }
-  }, [userUid]);
+    const unsubscribe = auth.onAuthStateChanged((user) => {
+      if (user) {
+        handleUserAuthenticated(user.uid, user.email);
+      } else {
+        setIsLoading(false);
+      }
+    });
+
+    return () => unsubscribe();
+  }, []);
 
   const checkUserProfile = async (uid) => {
     const snapshot = await database.ref(`USERS/${uid}`).once('value');
@@ -37,13 +44,14 @@ export default function App() {
     } else {
       setProfileComplete(false);
     }
+    setIsLoading(false);
   };
 
   const handleUserAuthenticated = async (uid, email) => {
     setUserUid(uid);
     setUserEmail(email);
-    await checkUserProfile(uid); // Wait for the profile check to complete
-    setActivePanel('agenda'); // Set default active panel after login
+    await checkUserProfile(uid);
+    setActivePanel('agenda');
   };
 
   const handleProfileSaved = () => {
@@ -51,6 +59,7 @@ export default function App() {
   };
 
   const handleLogout = async () => {
+    setIsLoading(true);
     try {
       await auth.signOut();
       setUserUid(null);
@@ -60,6 +69,7 @@ export default function App() {
     } catch (err) {
       console.error(err.message);
     }
+    setIsLoading(false);
   };
 
   const refreshBulletin = () => {
@@ -71,17 +81,19 @@ export default function App() {
       case 'agenda':
         return <TasksManager />;
       case 'posts':
-        return <InfoPosts/>;
+        return <InfoPosts />;
       case 'helpInfo':
         return <HelpInfo />;
       case 'notes':
-        return (<div>
+        return (
+          <div>
             <SubjectsNotesPanel />
             <div className='chart'>
               <button className='edit-btn' onClick={refreshBulletin}>Rafraîchir les calculs</button>
-              <Bulletin key={bulletinKey} /> 
+              <Bulletin key={bulletinKey} />
             </div>
-          </div> );
+          </div>
+        );
       case 'administration':
         return <Administration />;
       case 'settings':
@@ -93,21 +105,27 @@ export default function App() {
 
   return (
     <div className="app">
-      {!userUid ? (
-        <Auth onUserAuthenticated={handleUserAuthenticated} />
+      {isLoading ? (
+        <div>Chargement...</div>
       ) : (
         <>
-          {!profileComplete ? (
-            <UserProfileForm userUid={userUid} onProfileSaved={handleProfileSaved} />
+          {!userUid ? (
+            <Auth onUserAuthenticated={handleUserAuthenticated} />
           ) : (
             <>
-              <Sidebar setActivePanel={setActivePanel} userRole={userRole} />
-              <div className="main-content">
-                <Header onLogout={handleLogout} />
-                <RedirectGrid />
-                {renderPanel()}
-                <Footer />
-              </div>
+              {!profileComplete ? (
+                <UserProfileForm userUid={userUid} onProfileSaved={handleProfileSaved} />
+              ) : (
+                <>
+                  <Sidebar setActivePanel={setActivePanel} userRole={userRole} />
+                  <div className="main-content">
+                    <Header onLogout={handleLogout} />
+                    <RedirectGrid />
+                    {renderPanel()}
+                    <Footer />
+                  </div>
+                </>
+              )}
             </>
           )}
         </>

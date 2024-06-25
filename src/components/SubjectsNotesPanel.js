@@ -4,6 +4,8 @@ import firebase from 'firebase/compat/app';
 import 'firebase/compat/database';
 import 'firebase/compat/auth';
 import Notes from './Notes';
+import jsPDF from 'jspdf';
+import 'jspdf-autotable';
 
 const SubjectNotesPanel = () => {
   const [notes, setNotes] = useState([]);
@@ -150,9 +152,32 @@ const SubjectNotesPanel = () => {
     }
   };
 
+  const exportPDF = () => {
+    const doc = new jsPDF();
+
+    Object.keys(notesByCours).forEach((coursId, index) => {
+      const coursNom = getCoursNom(coursId);
+      const notesData = notesByCours[coursId].map((note) => [
+        note.nom,
+        note.note,
+        note.coef,
+      ]);
+
+      doc.text(coursNom, 10, 10 + (index * 60));
+      doc.autoTable({
+        head: [['Nom', 'Note', 'Coef']],
+        body: notesData,
+        startY: 20 + (index * 60),
+      });
+    });
+
+    doc.save('notes.pdf');
+  };
+
   return (
     <div className="chart">
       <h2>Gestion des Notes</h2>
+      <button className='edit-btn' onClick={exportPDF}>Exporter en PDF</button>
       <form onSubmit={(e) => { e.preventDefault(); editingNote ? saveNote() : addNote(); }}>
         <input
           type="text"
