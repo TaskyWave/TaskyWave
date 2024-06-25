@@ -1,14 +1,18 @@
 {
   "files": {
     "main.css": "/TaskyWave/static/css/main.4844569a.css",
-    "main.js": "/TaskyWave/static/js/main.2005879b.js",
+    "main.js": "/TaskyWave/static/js/main.76bab45e.js",
+    "static/js/213.48ab17ed.chunk.js": "/TaskyWave/static/js/213.48ab17ed.chunk.js",
+    "static/js/732.c974c375.chunk.js": "/TaskyWave/static/js/732.c974c375.chunk.js",
     "static/media/moodleLogo.png": "/TaskyWave/static/media/moodleLogo.685b02a701cde4a599fc.png",
     "index.html": "/TaskyWave/index.html",
     "main.4844569a.css.map": "/TaskyWave/static/css/main.4844569a.css.map",
-    "main.2005879b.js.map": "/TaskyWave/static/js/main.2005879b.js.map"
+    "main.76bab45e.js.map": "/TaskyWave/static/js/main.76bab45e.js.map",
+    "213.48ab17ed.chunk.js.map": "/TaskyWave/static/js/213.48ab17ed.chunk.js.map",
+    "732.c974c375.chunk.js.map": "/TaskyWave/static/js/732.c974c375.chunk.js.map"
   },
   "entrypoints": [
     "static/css/main.4844569a.css",
-    "static/js/main.2005879b.js"
+    "static/js/main.76bab45e.js"
   ]
 }
